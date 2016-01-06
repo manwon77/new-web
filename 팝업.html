@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="Generator" content="EditPlus®">
+<meta name="Author" content="">
+<meta name="Keywords" content="">
+<meta name="Description" content="">
+<title>Document</title>
+<style>
+/* 팝업 */
+.lay_pop_eurail{position:absolute;top:230px;left:230px;width:270px;height:auto;margin-left:0;z-index:1000;border:1px solid #c2c2c2;background:#fff;}
+.lay_pop_eurail .top_txt{padding:19px 13px 19px 58px;background:url(/euro/promotion/images/160105_ico_tit.gif) #1bc7c1 no-repeat 27px center;color:#fff;font-size:16px;line-height:23px;text-align:center;}
+.lay_pop_eurail .noti_detail{padding:35px 0 23px;font-size:14px;line-height:22px;text-align:center;}
+.lay_pop_eurail .noti_detail > span{color:#fd7c1e;}
+.lay_pop_eurail .noti_cont{background:url(/euro/promotion/images/160105_bg_dot.gif) repeat-x 0 0;padding:16px 0 22px;line-height:16px;text-align:center;}
+.lay_pop_eurail .noti_cont > p{margin-bottom:3px;}
+.lay_pop_eurail .noti_cont > ul > li > span{color:#fd7c1e;}
+.lay_pop_eurail .noti_cont > ul > li > span:first-child{color:#454545;font-weight:600;}
+.lay_pop_eurail .today_stop{overflow:hidden;padding:5px 10px;border-top:1px solid #c2c2c2;background:#494c51;color:#fff;}
+.lay_pop_eurail .today_stop input[type=checkbox], .lay_pop_eurail .today_stop label{vertical-align:middle;cursor:pointer;}
+.lay_pop_eurail .today_stop .btn_close{display:block;float:right;color:#fff;line-height:16px;}
+
+
+</style>
+
+</head>
+<body>
+<div class="lay_pop_pass" id="lay_pop_pass">
+							<div class="top_txt">
+								<strong>일본 패스/티켓 예약 안내</strong>
+							</div>
+
+							<ul class="noti_list">
+								<li class="n01">
+									<strong>* 입금 다음날부터 방문 수령</strong>해 주세요!
+									<ul>
+										<li><span>-</span> 수령 시 이름, 상품명, 핸드폰 뒷자리 확인</li>
+										<li><span>-</span> 대리 수령 가능</li>
+									</ul>
+								</li>
+								<li class="n02">
+									<strong>* 평일(영업일)에만 방문 수령</strong>해 주세요!
+									<ul>
+										<li><span>-</span> 서울/부산 방문 시간 09:00~20:00</li>
+										<li><span>-</span> 대구/대전 방문 시간 09:00~18:00</li>
+									</ul>
+								</li>
+								<li class="n03">
+									<strong>* 인천공항에서도 수령</strong>할 수 있어요!
+									<ul>
+										<li><span>-</span> 사전 온라인 예약 후 인천공항 수령 가능</li>
+										<li><span>-</span> 인천공항 방문 시간 06:00~20:00</li>
+									</ul>
+								</li>
+								<li class="n04">
+									<strong>* 택배 주문은 출국 7일전까지</strong> 해주세요!
+									<ul>
+										<li><span>-</span> 6일 이내 출발 시 방문 수령 또는 인천공항<br> 수령만 가능</li>
+									</ul>
+								</li>
+							</ul>
+							<p class="detailBtn"><a  href="http://www.tourbaksa.com/promotion/view.asp?idx=830">자세히보기 > </a></p>
+							<div class="today_stop">
+								<input type="checkbox" id="pop_today" name="pop_today"> <label for="pop_today">오늘 하루 그만보기</label>
+								<a href="#close" class="btn_close" onclick="closeWin();">[닫기]</a>
+							</div>
+						</div>
+<div id="lay_pop_eurail" class="lay_pop_eurail" style="display:block">
+	<div class="top_txt">
+		<strong>유레일 패스 요금 안내</strong>
+	</div>
+
+	<p class="noti_detail">2016년 새로운 패스종류와 요금은<br />홈페이지 업데이트 중으로<br/><span>하단의 신청서 작성 후 <br />담당자가 별도 안내 드릴 예정</span>입니다.</p>
+
+	<div class="noti_cont">
+		<p>문의사항</p>
+		<ul>
+			<li><span>서울 및 기타지역</span> : 황보혜지 <span>070-7017-2179</span></li>
+			<li><span>부산 및 경상도</span> : 조원기 <span>070-7012-7250</span></li>
+		</ul>
+	</div>
+
+	<div class="today_stop">
+		<input type="checkbox" id="pop_today" name="pop_today"> <label for="pop_today">오늘 하루 그만보기</label>
+		<a href="#close" class="btn_close" onclick="self.close();">[닫기]</a>
+	</div>
+</div>
+<script>
+								function closeWin() {
+									if($('#pop_today').is(':checked')){
+										setCookiePass( "passcookie", "done" , 1 );
+									}
+									$('#lay_pop_pass').hide();
+									return false;
+								}
+
+								function setCookiePass( name, value , expiredays) {
+									var todayDate = new Date();
+										todayDate = new Date(parseInt(todayDate.getTime() / 86400000) * 86400000 + 54000000);
+
+									if ( todayDate > new Date() ){
+										expiredays = expiredays - 1;
+									}
+									todayDate.setDate( todayDate.getDate() + expiredays );
+									document.cookie = name + "=" + escape( value ) + "; path=/; expires=" + todayDate.toGMTString() + ";"
+								}
+
+								$(document).ready(function(){
+									$(".subCont").css("overflow","visible");
+									cookiedata = document.cookie;
+									//console.log(cookiedata.indexOf("passcookie=done"))
+									if (cookiedata.indexOf("passcookie=done") < 0){
+										$('#lay_pop_pass').show();
+									}
+
+									<%If (InStr(MyAgent, "iPhone") > 0 Or InStr(MyAgent, "Android") > 0 ) Then%> /* 모바일에서만 사용 */
+									function layer_open(){
+										var temp = $('#lay_pop_pass');
+										//temp.show();
+
+
+										temp.find('.btn_close').click(function(e){
+											temp.hide();
+											e.preventDefault();
+										});
+									}
+
+									layer_open();
+
+									<%Else%>
+									<%End If%>
+
+								});
+							</script>
+
+</body>
+</html>

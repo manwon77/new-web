@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="euc-kr">
+    <title>Title</title>
+</head>
+<body>
+
+<!-- #include virtual = "/inc/header.asp" -->
+<!-- #include virtual = "/pass/inc/PassLib.asp" -->
+<%
+'NEW Icon 적용기간 노출이후 2달
+NewIconDate1 = DateAdd("m", 2, CDate("2013-10-21"))
+DateDiff1 = CInt(DateDiff("d", Date(), NewIconDate1))
+bread_value = request("bread_value")
+sq = REQ("sq", "Q")			'2015-05-27 추가
+Call WWWOpen()
+%>
+<!--반갑습니다.-->
+<!-- #include virtual = "/include/popup/inc_common_layer.asp" -->
+<!-- #include virtual = "/include/popup/inc_common_popup.asp" -->
+<script type="text/javascript" src="/js/rolling.js"></script>
+<script type="text/javascript" src="/pass/js/reserve.js"></script>
+
+<script type="text/javascript">
+    var rollingcnt = 0;
+    window.onload = function(){
+
+        $("#promotion").roll({
+            tar : "promotionBanner"
+            , tar2 : "promotionBanner"
+            , page : "btnRArea"
+        });
+
+        $("#texTab").tabs({
+            type : "click",
+            list : ">a",
+            text : "on"
+        })
+        $("#texTab2").tabs({
+            type : "click",
+            list : ">a",
+            text : "on"
+        });
+
+        subRolling();
+    }
+
+</script>
+
+<script>
+    function changePassTab(gubun, TabNo){
+
+        var overTab = gubun;
+        var hiddenTab= 0;
+        if (overTab =="0")	hiddenTab= 1;
+
+        $("#ListTab" + TabNo + hiddenTab).removeClass("on");
+        $("#PassList" + TabNo + hiddenTab).css("display", "none");
+
+        $("#ListTab" + TabNo + overTab).addClass("on");
+        $("#PassList" + TabNo + overTab).css("display", "block");
+
+    }
+</script>
+<section class="container">
+    <h2 class="hidden">컨텐츠영역</h2>
+    <!-- #include virtual = "/inc/breadcrumb_pass.asp" -->
+    <article class="innerWrap layoutTypeA clearfix">
+        <!-- #include virtual = "/inc/left_pass.asp" -->
+
+        <!-- content -->
+        <div id="content" class="subCont passCont">
+            <div class="passContTit">
+                <h2>일본 패스/티켓</h2>
+                <!--<a href="TmpPackage_list.asp" class="btnCart"><span class="hidden">장바구니 바로가기</span></a>-->
+            </div>
+            <!-- contWrap -->
+            <div class="contWrap clearfix">
+                <!-- 2015-07-17 일본 패스/티켓 레이어 팝업 추가 -->
+                <div class="lay_pop_pass" id="lay_pop_pass">
+                    <div class="top_txt">
+                        <strong>일본 패스/티켓 예약 안내</strong>
+                    </div>
+
+                    <ul class="noti_list">
+                        <li class="n01">
+                            <strong>* 입금 다음날부터 방문 수령</strong>해 주세요!
+                            <ul>
+                                <li><span>-</span> 수령 시 이름, 상품명, 핸드폰 뒷자리 확인</li>
+                                <li><span>-</span> 대리 수령 가능</li>
+                            </ul>
+                        </li>
+                        <li class="n02">
+                            <strong>* 평일(영업일)에만 방문 수령</strong>해 주세요!
+                            <ul>
+                                <li><span>-</span> 서울/부산 방문 시간 09:00~20:00</li>
+                                <li><span>-</span> 대구/대전 방문 시간 09:00~18:00</li>
+                            </ul>
+                        </li>
+                        <li class="n03">
+                            <strong>* 인천공항에서도 수령</strong>할 수 있어요!
+                            <ul>
+                                <li><span>-</span> 사전 온라인 예약 후 인천공항 수령 가능</li>
+                                <li><span>-</span> 인천공항 방문 시간 06:00~20:00</li>
+                            </ul>
+                        </li>
+                        <li class="n04">
+                            <strong>* 택배 주문은 출국 7일전까지</strong> 해주세요!
+                            <ul>
+                                <li><span>-</span> 6일 이내 출발 시 방문 수령 또는 인천공항<br> 수령만 가능</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <p class="detailBtn"><a  href="http://www.tourbaksa.com/promotion/view.asp?idx=830">자세히보기 > </a></p>
+                    <div class="today_stop">
+                        <input type="checkbox" id="pop_today" name="pop_today"> <label for="pop_today">오늘 하루 그만보기</label>
+                        <a href="#close" class="btn_close" onclick="closeWin();">[닫기]</a>
+                    </div>
+                </div>
+
+                <script>
+                    function closeWin() {
+                        if($('#pop_today').is(':checked')){
+                            setCookiePass( "passcookie", "done" , 1 );
+                        }
+                        $('#lay_pop_pass').hide();
+                        return false;
+                    }
+
+                    function setCookiePass( name, value , expiredays) {
+                        var todayDate = new Date();
+                        todayDate = new Date(parseInt(todayDate.getTime() / 86400000) * 86400000 + 54000000);
+
+                        if ( todayDate > new Date() ){
+                            expiredays = expiredays - 1;
+                        }
+                        todayDate.setDate( todayDate.getDate() + expiredays );
+                        document.cookie = name + "=" + escape( value ) + "; path=/; expires=" + todayDate.toGMTString() + ";"
+                    }
+
+                    $(document).ready(function(){
+                        $(".subCont").css("overflow","visible");
+                        cookiedata = document.cookie;
+                        //console.log(cookiedata.indexOf("passcookie=done"))
+                        if (cookiedata.indexOf("passcookie=done") < 0){
+                            $('#lay_pop_pass').show();
+                        }
+
+                        <%If (InStr(MyAgent, "iPhone") > 0 Or InStr(MyAgent, "Android") > 0 ) Then%> /* 모바일에서만 사용 */
+									function layer_open(){
+										var temp = $('#lay_pop_pass');
+										//temp.show();
+
+
+										temp.find('.btn_close').click(function(e){
+											temp.hide();
+											e.preventDefault();
+										});
+									}
+
+									layer_open();
+
+									<%Else%>
+									<%End If%>
+
+								});
+                </script>
+                <!--//2015-07-17 일본 패스/티켓 레이어 팝업 추가 -->
+
+
+
+                <!-- 2015-09-10 추석 연휴 기간 패스/티켓 수령 안내 -->
+                <!--	<div class="lay_pop_Feast" id="lay_pop_Feast" style="display:none;">
+                        <p class="top_tit"><strong>추석 연휴 기간</strong> <strong>패스/티켓 수령 안내</strong></p>
+                        <ul class="Receip_list">
+                            <li>
+                                <strong>택배 수령</strong>
+                                <p>※ 발송 중단 기간 : 9/23(수)~9/30(수)</p>
+                                <ul>
+                                    <li>- <span>9/22(화)오전 11시 이전</span> 결제 완료된 건에<br /> 한해 <span>당일 택배발송</span></li>
+                                    <li>- <span>9/22(화)오전 11시 이후</span> 결제 건은 <span>10/1(목)<br /> 이후 순차발송</span></li>
+                                    <li>- 출국일이 10/6(화) 이전인 경우 9/22(화) 오전<br /> 11시까지 결제 요망</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>인천공항 수령</strong>
+                                <ul>
+                                    <li>- <span>9/26(토)~9/30(수)</span>에 인천공항 수령 희망 시,<br /> <span>9/25(금) 오후 1시까지</span> 예약 및 결제 완료에 한해 가능</li>
+                                </ul>
+                            </li>
+                            <li>
+                                <strong>방문 수령</strong>
+                                <ul>
+                                    <li>- <span>9/26(토)~9/29(화)</span> 추석 연휴 기간 중 <span>방문<br /> 수령 및 방문 구매 불가</span></li>
+                                    <li>- 구매 당일 방문 수령 불가</li>
+                                    <li>- 그 외 방문 수령 시 대리자 수령 가능</li>
+                                </ul>
+                            </li>
+                        </ul>
+                        <a href="http://www.tourbaksa.com/Community/Community_view.asp?idx=1510263&thread=-2000633457&dyear=&dmonth=&dday=&page=1&kind=new&catediv=20q&siteCode=&sub=&sel_category=&cur_category=&search_str=&column=&comment_search=&sort=&departureCode=" class="btn_look" target="_blank">상세안내더보기></a>
+                        <div class="today_stop">
+                            <input type="checkbox" id="pop_today" name="pop_today"> <label for="pop_today">오늘 하루 열지않기</label>
+                            <a href="#close" class="btn_close" onclick="closeWin();">[닫기]</a>
+                        </div>
+                    </div>
+                    <script>
+                            function closeWin() {
+                                if($('#pop_today').is(':checked')){
+                                    setCookiePass( "feastpasscookie", "done" , 1 );
+                                }
+                                $('#lay_pop_Feast').hide();
+                                return false;
+                            }
+
+                            function setCookiePass( name, value , expiredays) {
+                                var todayDate = new Date();
+                                    todayDate = new Date(parseInt(todayDate.getTime() / 86400000) * 86400000 + 54000000);
+
+                                if ( todayDate > new Date() ){
+                                    expiredays = expiredays - 1;
+                                }
+                                todayDate.setDate( todayDate.getDate() + expiredays );
+                                document.cookie = name + "=" + escape( value ) + "; path=/; expires=" + todayDate.toGMTString() + ";"
+                            }
+
+                            $(document).ready(function(){
+                                cookiedata = document.cookie;
+
+
+                                if (cookiedata.indexOf("feastpasscookie=done") < 0){
+                                    $('#lay_pop_Feast').show();
+                                }
+
+                                <%If (InStr(MyAgent, "iPhone") > 0 Or InStr(MyAgent, "Android") > 0 ) Then%> /* 모바일에서만 사용 */
+                                function layer_open(){
+                                    var temp = $('#lay_pop_Feast');
+                                    //temp.show();
+
+
+                                    temp.find('.btn_close').click(function(e){
+                                        temp.hide();
+                                        e.preventDefault();
+                                    });
+                                }
+
+                                layer_open();
+
+                                <%Else%>
+                                <%End If%>
+
+                            });
+                        </script>-->
+                <!-- //2015-09-10 추석 연휴 기간 패스/티켓 수령 안내 -->
+
+                <div class="leftCont promotion" id="promotion">
+                    <div class="topTitArea clearfix">
+                        <h3>기획 프로모션</h3>
+                        <div class="btnRArea floatR">
+                            <%
+                            Call OpenPass()
+                            SQL = "select top 5 * from dbo.TBL_PASS_MST where KIND='0'  and (Area_code is null or Area_code<>'KO')  and isnull(useYN, 'Y') ='Y' order by sortnum asc "
+                            Set RS4001 = fn_SQLExecToRS(sql, Nothing, ConnPass)
+                            If Not RS4001.EOF Then
+                            BannerData = RS4001.getRows()
+                            End If
+                            Set RS4001 = Nothing
+                            classNm ="class=""on"""
+                            For i = 0 To UBound(BannerData, 2)
+                            RW("<a href=""#"" "& classNm &">"&i+1&"</a>" &Chr(10))
+                            classNm =""
+                            Next
+                            %>
+                        </div>
+                    </div>
+                    <div class="innerCont bannerWrap">
+                        <ul class="promotionBanner">
+                            <%
+                            For i = 0 To UBound(BannerData, 2)
+                            RW("<li>" & Chr(10))
+                            RW("<a href="""&BannerData(2, i)&"&sq="&sq&"""><img src="""&BannerData(3, i)&""" class=""pic"" alt="""&BannerData(4, i)&""" /></a>" & Chr(10))
+                            RW("</li>" &Chr(10) )
+                            Next
+                            %>
+                        </ul>
+                    </div>
+                </div><!-- //leftCont -->
+
+                <div class="rightCont contactArea" >
+                    <div class="rinkGroup">
+                        <h3 class="hidden">패스/티켓 이용안내</h3>
+                        <ul>
+                            <%
+                            SQL = "select top 3 URL, TITLE, isnull(DESCRIPTION, '&nbsp;') as DESCRIPTION from dbo.TBL_PASS_MST where KIND='1' and (Area_code is null or Area_code<>'KO')  and isnull(useYN, 'Y') ='Y' order by sortnum asc "
+                            Set RS4001 = fn_SQLExecToRS(sql, Nothing, ConnPass)
+                            If Not RS4001.EOF Then
+                            cnt = 1
+                            Do Until RS4001.EOF
+                            '										If cnt = 1 Then
+                            '											URL = "/community/Community_list.asp?catediv=2to"
+                            '										Else
+                            URL = RS4001("URL")
+                            '										End If
+                            RW("							<a href=""" & URL & """><li>" & Chr(10))
+                            RW( RS4001("TITLE") &"<br>" & Chr(10))
+                            RW("								<span> "&RS4001("DESCRIPTION")&" </span>" & Chr(10))
+                            RW("							</li></a>" & Chr(10))
+                            cnt = cnt + 1
+                            RS4001.moveNext
+                            Loop
+                            End If
+                            Set RS4001 = nothing
+                            %>
+                        </ul>
+                    </div>
+                </div><!-- //rightCont -->
+            </div><!-- //contWrap -->
+
+            <div class="passTicket2 clearfix">
+                <div class="contBox">
+                    <h3 class="hidden">패스/티켓 종류</h3>
+
+                    <%
+
+                    rowcnt = 0
+                    colcnt = 1
+                    tmpCate = ""
+                    today=now()
+                    SQL = ""
+                    SQL = SQL & "select a.NM,b.NM,c.NM,c.idx,c.pidx from TBL_MENU_CATE as a"
+                    SQL = SQL & " inner join TBL_MENU_CATE as b on b.pidx =a.idx"
+                    SQL = SQL & " inner join TBL_MENU_CATE as c on b.idx = c.pidx"
+                    SQL = SQL & " where a.useYN='Y' and b.useYN='Y' and c.useYN='Y' and a.Area_code=''"
+                    SQL = SQL & " order by a.catesort,b.catesort,c.catesort asc"
+
+                    Set RS4001 = fn_SQLExecToRS(SQL, Nothing, ConnPass)
+
+                    If Not RS4001.EOF Then
+                    depth1 = RS4001.Getrows()
+                    depth1_count = RS4001.RecordCount
+                    End If
+                    Set RS4001 = Nothing
+                    for i=0 to  depth1_count-1
+                    SQL1 = ""
+                    '								SQL1 = SQL1 & "select a.SEQ,a.Gubun,a.PCODE,a.Good_NM,a.acpDate,b.pcode From  TBL_MENU_pass as b left join tbl_product_info as a on a.pcode = b.pcode"
+                    SQL1 = SQL1 & "select a.SEQ,a.Gubun,a.PCODE,a.Good_NM,a.acpDate,b.pcode,a.usjOn From  TBL_MENU_pass as b left join tbl_product_info as a on a.pcode = b.pcode"
+                    SQLwhere = " where b.pidx =" &depth1(3,i) & " and a.Area_code ='WD' and b.AG_CD is null order by b.psort asc"
+
+
+                    SQL1 = SQL1 & SQLwhere
+
+                    Set RS5001 = fn_SQLExecToRS(SQL1, Nothing, ConnPass)
+                    If Not RS5001.EOF Then
+                    pass = RS5001.Getrows()
+                    pass_count = RS5001.RecordCount
+
+                    bread_idx = depth1(4, i)
+
+                    if  tmpCate  <>  depth1(1, i) then
+                    idNm =  depth1(4, i)
+                    select Case(colCnt)
+                    case 1 :
+                    classNm = "short"
+                    '											liClassNM = "passList twoRows clearRows"
+                    liClassNM = "passList3 twoRows clearRows"
+                    liClassNM_ticket = ""
+                    case 2 :
+                    '											classNm = "long firstCol"
+                    '											liClassNM = "passList2 twoRows"
+                    '											liClassNM_ticket ="passList2 twoRows"
+                    classNm = "short firstCol"
+                    liClassNM = "passList2 threeRows "
+                    liClassNM_ticket ="passList2"
+
+                    case 3 :
+                    '											classNm = "short firstCol"
+                    '											liClassNM = "passList2 threeRows clearRows"
+                    '											liClassNM_ticket ="passList2 twoRows clearRows"
+
+                    classNm = "long firstCol"
+                    liClassNM = "passList2 twoRows"
+                    liClassNM_ticket ="passList2 twoRows"
+                    case 4 :
+                    classNm = "firstRow"
+                    liClassNM = "passList2 threeRows clearRows"
+                    liClassNM_ticket ="passList2 twoRows clearRows"
+                    case 5:
+                    classNm = ""
+                    liClassNM = "passList secondRow"
+                    liClassNM_ticket =""
+                    case 6 :
+                    classNm = ""
+                    liClassNM = "passList2 twoRows clearRows"
+                    liClassNM_ticket =""
+
+                    Case Else :
+                    classNM =""
+                    liClassNM = ""
+                    liClassNM_ticket =""
+                    end select
+
+                    tmpCate = depth1(1, i)
+
+                    if i > 0 then
+                    response.write "</li>"
+                    else
+                    response.write "<ul class=""firstRow"">"
+                    h5cnt=0	'h5cnt =1 일때 h5태그 미표시  0일때 표시
+                    end if
+
+
+                    if colCnt = 4 or colCnt=7 then
+                    rowcnt = rowcnt +1
+                    '									elseif colCnt =5 or colCnt =6  then
+                    '										h5cnt = 0
+                    end if
+                    if rowcnt = 1 then
+                    response.write"</ul><ul class=""secondRow"">"
+                    end if
+
+                    response.write"<li  class='"&classNM&"' id='"&idNm&"'>"
+
+                    %><div class="topTitArea2 clearfix">
+                        <h4><%=depth1(1, i) %></h4>
+                        <h5><%=depth1(2, i) %></h5>
+                    </div>
+                    <%
+                    rowcnt = 0
+                    colCnt = colCnt + 1
+                    response.write "<ul class='"&liClassNM&"'>"
+                        else
+                        response.write "<div class=""topTitArea2 clearfix""><h5>"& depth1(2, i)&"</h5></div>"
+                response.write "<ul class='"&liClassNM_ticket&"'>"
+                end if
+
+                for j=0 to pass_count-1
+                today1=pass(4,j)
+                today1 = trim(today1)
+
+                if len(today1) = 0 then
+                today1 = null
+                end if
+
+                DiffADate = DateDiff("d", today, today1)
+                GoodTrue = false
+                if instr(pass(5,j),"-")>0 then
+                GoodTrue = true
+                end if
+
+                if  today1 <> "" then
+                if DiffADate < 0 then
+                if GoodTrue = false then
+                response.write "<li><a href=/pass/Good_detail.asp?SEQ="&pass(0,j)& "&b_id=" & bread_idx& ">"&pass(3,j)&"</a></li>"
+                else
+                response.write fn_getGoodItem(pass(5,j))
+                end if
+                else
+                if GoodTrue= false then
+                if pass(5,j) = "PS00071" then
+                response.write "<li><a href='#' onclick=javascript:window.open('http://www.tourbaksa.com/promotion/view.asp?idx=1525');>"&pass(3,j)&"<img src='/img/pass/icon_passnew.gif'></a></li>"
+                else
+                response.write "<li><a href=/pass/Good_detail.asp?SEQ="&pass(0,j)&"&b_id="& bread_idx & ">"&pass(3,j)&"<img src='/img/pass/icon_passnew.gif'></a></li>"
+                end if
+                else
+                response.write instr(pass(5,j),"-")
+                response.write fn_getGoodItem(pass(5,j))
+                end if
+
+                end if
+                else
+                if GoodTrue= false then
+                response.write "<li><a href=/pass/Good_detail.asp?SEQ="&pass(0,j)&"&b_id="& bread_idx & ">"&pass(3,j)&"</a></li>"
+                else
+                response.write fn_getGoodItem(pass(5,j))
+                end if
+                end if
+                next
+                response.write "</ul>"
+                else
+                End If
+                Set RS5001 = Nothing
+
+
+                next%>
+                </li>
+                </ul>
+
+            </div>
+
+            <div class="passTicketItem" id="passItemList"></div>
+        </div><!-- //패스/티켓 리스트 -->
+
+        <%
+        SQL = "select top 3 * from dbo.TBL_PASS_MST where KIND='3' and isnull(useYN, 'Y') ='Y' and (Area_code is null or Area_code<>'KO') order by sortnum asc "
+        Set RS4001 = fn_SQLExecToRS(sql, Nothing, ConnPass)
+        If Not RS4001.EOF Then
+        %>
+        <div class="subBVisu" id="subBVisu">
+            <h2 class="hidden">베너영역</h2>
+            <div class="btnArea">
+                <a href="#none" class="posiA btnPre"><img src="/images/btn/btn_pre_02.png" alt="이전보기" /></a>
+                <a href="#none" class="posiA btnNext"><img src="/images/btn/btn_next_02.png" alt="다음보기" /></a>
+            </div>
+            <div class="innerCont" >
+                <ul class="clearfix" >
+                    <%
+                    classCnt = "1"
+                    Do Until RS4001.eof
+                    RW("<li class="""&classCnt&"""><a href="""&RS4001("URL")&"""><img src="""&RS4001("img")&""" class=""pic"" alt="""&RS4001("TITLE")&""" /></a></li>" & Chr(10))
+                    RS4001.moveNext
+                    Loop
+                    %>
+                </ul>
+            </div>
+        </div><!-- //subBVisu -->
+        <!-- script 부분 추가 2013-09-06 -->
+        <%	End If
+        Set RS4001 = nothing
+
+
+
+
+
+
+        Function fn_getGoodItem(SEQ)
+
+        arrGood = Split(SEQ, "-")
+        goodInfo = arrGood(0)
+        GoodYY = Left(goodInfo, 4)
+        Good_SEQ= Mid(goodInfo, 5 , Len(goodInfo)   )
+        AIR_SECT_SEQ = arrGood(1)
+
+        SQL = ""
+        '	SQL = SQL & "select EV_NM from GO004 where good_yy='" & GoodYY & "' and Good_SEQ=" & Good_SEQ & " and AIR_SECT_SEQ = " & AIR_SECT_SEQ & ""
+        '	SQL = SQL & "select a.EV_NM,b.P1,b.P2,b.P3,b.P4,b.P5 from GO004 as a inner join TBL_ITEM as b on a.good_yy = b.good_yy where a.good_yy='" & GoodYY & "' and a.Good_SEQ=" & Good_SEQ & " and a.AIR_SECT_SEQ = " & AIR_SECT_SEQ & " and b.itemcode = '" & GoodYY&GoodSEQ & "'"
+
+        SQL = SQL & "select a.EV_NM,c.P1,c.P2,c.P3,c.P4,c.P5 from GO004 as a inner join TBL_ITEM as b on a.good_yy = b.good_yy inner join TBL_WWW_Item_MENU as c on c.IDX = b.IDX where a.good_yy='" & GoodYY & "' and a.Good_SEQ=" & Good_SEQ & " and a.AIR_SECT_SEQ = " & AIR_SECT_SEQ & " and b.itemcode = '" & GoodYY&Good_SEQ & "'"
+
+
+        Set RF001 = fn_SQLExecToRS(SQL, Nothing, DBCon)
+        If Not RF001.EOF Then
+        STR = ""
+        itemURL = "/item/index.asp?GOOD_YY="&GoodYY&"&Good_SEQ="&GoodSEQ&"&airIdx="&AIR_SECT_SEQ&"&itemCode="&GoodYY&GoodSEQ&"&M1="&RF001("P1")&"&M2="&RF001("P2")&"&M3="&RF001("P3")&"&M4="&RF001("P4")&"&M5="&RF001("P5")&""
+        STR = "<li><a href=""" & itemURL & """>" & RF001("EV_NM") & "</a></li>"
+        end if
+
+        fn_getGoodItem = STR
+
+
+
+        End Function
+        %>
+
+        </div><!-- //content -->
+    </article><!-- //contentArea innerWrap -->
+    <script>
+        function Loading_Index(area){
+            $("#passItemList").html(loading);
+            $.ajax({
+                url: '/xml/pass_main_xml.asp',
+                data : 'area=' + area,
+                type: 'GET',
+                dataType: 'xml',
+                timeout: 4000,
+                error: function(){
+                    alert('해당 상품이 없거나 일시적인 오류입니다. ');
+                },
+                success: function(xml){
+                    var Item_text;
+                    $(xml).find('Results').each(function(){
+                        Item_text = $(this).text();
+                    });
+                    var div_test = document.getElementById('passItemList');
+                    div_test.innerHTML ="";
+                    div_test.innerHTML = Item_text;
+                    if ("<%=bread_value%>" != ""){
+                        if("<%=className%>" =="inputArea"){
+                            window.scroll(0, getOffsetTop(document.getElementById(area)));
+                        }else{
+                            window.scroll(0, getOffsetTop(document.getElementById("passItemList")));
+                        }
+                    }
+//				document.getElementbyId("passItemList").innerHTML = Item_text
+//				$("#passItemList").innerHTML = Item_text ;
+//		alert($("#passItemList").html());
+                }
+            });
+        }
+        if ("<%=bread_value%>" != "")
+        {
+            Loading_Index("<%=bread_value%>");
+
+        }else{
+            Loading_Index('0');
+        }
+        $(window).resize(function(){
+            if ($(this).width() < 1200)
+            {
+                if (rollingcnt ==0)
+                {
+                    subRolling();
+                }
+                rollingcnt = 1;
+            }
+        });
+
+        function getOffsetTop(el) {
+            var top = 0;
+            if (el.offsetParent) {
+                do {
+                    top += el.offsetTop;
+                } while (el = el.offsetParent);
+                return [top];
+            }
+        }
+
+
+    </script>
+    <!-- #include virtual = "/inc/Footer_Icon.asp" -->
+</section><!-- contentArea -->
+<hr />
+<!-- #include virtual = "/inc/Side.asp" -->
+<!-- //contentArea -->
+<hr />
+<!-- footer -->
+<!-- #include virtual = "/inc/footer.asp" -->
+<!-- footer// -->
+
+
+</body>
+</html>

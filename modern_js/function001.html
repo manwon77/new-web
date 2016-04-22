@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="euc-kr">
+    <title>Title</title>
+</head>
+<body>
+<script>
+//    var array1 = Array();
+//    var array2 = Array(10);
+//    var array3 = Array(273, 103, 57, 32);
+//
+//    alert('array1 : ' + array1 +  '\n' + 'array2 : ' + array2 + '\n' + 'array3 : ' + array3 + '\n');
+
+    function sumAll(){
+        var willReturn = 0;
+        for (var i in arguments){
+            willReturn += arguments[i];
+        }
+        return willReturn;
+        //alert(typeof (arguments) + ':' + arguments.length);
+
+    }
+
+    alert(sumAll(1,2,3,4,5,6,7,8,9));
+
+</script>
+
+
+
+</body>
+</html>
